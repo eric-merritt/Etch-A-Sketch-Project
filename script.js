@@ -1,9 +1,20 @@
 document.body.onload = createGrid;
 
+const title = document.head.querySelector('title');
+
+title.innerText = 'Etch-A-Sketch Project';
+
+
+
 const destDiv = document.getElementById('destDiv');
     destDiv.style.display = 'flex';
     destDiv.style.flexDirection = 'row';
     destDiv.style.justifyContent = 'space-around';
+    destDiv.style.backgroundColor = 'red';
+    destDiv.style.borderStyle = 'solid';
+    destDiv.style.borderRadius = '15px';
+    destDiv.style.paddingTop= '5px';
+    destDiv.style.paddingBottom = '15px';
 
 const colorBtnDiv = document.createElement('form');
     colorBtnDiv.style.display = 'flex';
@@ -11,12 +22,15 @@ const colorBtnDiv = document.createElement('form');
     colorBtnDiv.style.justifyContent = 'flex-end';
 
 const colorBtn = document.createElement('button');
-    colorBtn.innerText = 'Random Color'
     colorBtn.style.borderRadius = '100%';
     colorBtn.style.fontWeight = '700';
     colorBtn.style.fontSize = '25px';
     colorBtn.style.height = '150px';
     colorBtn.style.width = '150px';
+    
+
+    colorBtn.setAttribute('type','button');
+
 
 colorBtnDiv.appendChild(colorBtn);
 
@@ -83,6 +97,15 @@ const resetBtn = document.createElement('button');
     resetBtn.style.height = '150px';
     resetBtn.style.width = '150px';
 
+    resetBtn.addEventListener('click',() => {
+                
+        divContainer.innerHTML = "";
+    
+        createGrid();
+    
+    })
+
+    
 
 resetBtnDiv.appendChild(resetBtn);
 
@@ -97,51 +120,36 @@ destDiv.appendChild(resetBtnDiv);
 document.body.appendChild(destDiv);
 
 
-document.body.style.backgroundColor = "red";
-document.body.style.paddingTop = "auto";
+document.body.style.backgroundColor = "darkgray";
+document.body.style.position = 'relative';
+document.body.style.display = 'flex';
+document.body.style.flexDirection = 'column';
 
 
-resizeBtn.addEventListener('mouseover', function(){
-    const orgColor = resizeBtn.style.color;
-
-    if (orgColor === 'red'){
-        resizeBtn.style.color = "green";
-        resizeBtn.style.backgroundColor = "darkgrey";
-    } 
-})
-
-    resizeBtn.addEventListener('mouseout', (event) => {
-
-    event.target.style.color = "red";
-        event.target.style.backgroundColor = "black";
-    }
-    )
-
-
+let modal = document.createElement('section');
+    modal.className = 'modal hidden';
+    modal.style.position = 'absolute';
+    modal.style.top = '30%';
+    modal.style.right = '59%';
 
 let gridDialog = document.createElement('dialog');
     gridDialog.setAttribute('id','gridSizeDialog');
-    gridDialog.style.display = 'flex';
     gridDialog.className = 'gridDialog';
+    gridDialog.style.padding = '100px';    
+    gridDialog.style.display = 'flex';
     gridDialog.style.flexDirection = 'column';
     gridDialog.style.alignContent = 'center';
-    gridDialog.style.justifyContent = 'stretch';
-    gridDialog.style.border = 'none';  
-    gridDialog.style.cssText = '#gridSizeDialog::backdrop { background-color: red; border-radius: 15px;  }';
-
+    gridDialog.style.border = '2px';
+    gridDialog.style.borderStyle = 'solid';
+    gridDialog.style.borderRadius = '15px';
+    gridDialog.style.padding = '10px';
+    gridDialog.style.backgroundColor = 'red';
+    gridDialog.style.boxShadow = '5px 5px 5px 0px';
 
 let dialogForm = document.createElement('form');
     dialogForm.setAttribute('id','user-grid-size-input')
     dialogForm.setAttribute('method','dialog');
-    dialogForm.style.display = 'flex';
-    dialogForm.style.flexDirection = 'column';
-    dialogForm.style.width = '100%';
-    dialogForm.style.alignContent = 'center';
-    dialogForm.style.border = '2px';
-    dialogForm.style.borderStyle = 'solid';
-    dialogForm.style.borderRadius = '15px';
-    dialogForm.style.padding = '10px';
-    dialogForm.style.backgroundColor = 'red';
+    
 
 let textArea = document.createElement('div');
     textArea.style.display = 'flex';
@@ -159,6 +167,8 @@ let formInput = document.createElement('input');
     formInput.style.height = '150px';
     formInput.style.fontSize = '100px';
     formInput.style.backgroundColor = 'lightgray';
+    formInput.style.borderStyle = 'inset';
+    formInput.style.borderWidth = '2px';
     formInput.style.textAlign = 'center';
 
 let buttonDiv = document.createElement('div');
@@ -198,39 +208,58 @@ buttonDiv.appendChild(formCancel);
 dialogForm.appendChild(buttonDiv);
 
 gridDialog.appendChild(dialogForm);
-divContainer.appendChild(gridDialog);
+modal.appendChild(gridDialog);
+document.body.appendChild(modal);
 
 
 
 
-btnCont.addEventListener('click', () => {
+    resizeBtn.addEventListener('mouseover', function(){
+        const orgColor = resizeBtn.style.color;
+    
+        if (orgColor === 'red'){
+            resizeBtn.style.color = "green";
+            resizeBtn.style.backgroundColor = "darkgrey";
+        } 
+    })    
+        
+        resizeBtn.addEventListener('mouseout', (event) => {
+    
+        event.target.style.color = "red";
+            event.target.style.backgroundColor = "black";
+        }
+        )
 
-    gridDialog.showModal();
-});
+            
 
-formInput.addEventListener('change', (e) => {
-    inputSubmit.value = formInput.value;
-
-});
-
-resetBtn.addEventListener('click',() => {
-                    
-    divContainer.innerHTML = "";
-
-    createGrid();
-
-})
-
-
-inputSubmit.addEventListener('click', () => { // Empties the outside div by defining its innerHTML as empty
-    divContainer.innerHTML = "";
-    createGrid();
-})      
-
-
-
-                        
 function createGrid(){
+
+    const showModal = () => {
+        modal.classList.remove('hidden');
+    }
+
+    resizeBtn.addEventListener('click',showModal);
+    
+    formInput.addEventListener('change', (e) => {
+        inputSubmit.value = formInput.value;
+    
+    });
+
+    
+
+const closeModal = () => {
+    modal.classList.add('hidden');
+};
+    formCancel.addEventListener('click',closeModal);    
+    
+    inputSubmit.addEventListener('click', () => { // Empties the outside div by defining its innerHTML as empty
+        divContainer.innerHTML = "";
+        createGrid();
+        closeModal();
+    })
+
+    
+
 
 for (y = 1; y <= inputSubmit.value; y++)
             {  
@@ -253,32 +282,9 @@ for (y = 1; y <= inputSubmit.value; y++)
             
                     gridDivs.className = "gridDivs";
 
-            gridDivs.style.backgroundColor = 'lightgray'; //setting original background color
+      
 
-           
 
-            
-
-            
-
-const randomRgbColor = () => {
-                let r = Math.floor(Math.random() * 256);
-                let g = Math.floor(Math.random() * 256);
-                let b = Math.floor(Math.random() * 256);
-                        return 'rgb('+r+','+g+','+b+')';
-            }
-            
-                gridDivs.addEventListener('mouseover',(event) => {
-
-                        let drawColor = gridDivs.style.backgroundColor;
-
-                        if (drawColor == 'lightgray'){
-                            gridDivs.style.backgroundColor = randomRgbColor();
-                        }
-                    })
-
-                  
-  
         rowDivs.appendChild(gridDivs);
 
     
@@ -326,7 +332,53 @@ const randomRgbColor = () => {
 
             
 }               
+const randomRgbColor = () => {
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
+            return 'rgb('+r+','+g+','+b+')';
+}
+
+
+function setBlack(){
+    gridDivs.style.backgroundColor = 'black';
+}
+
+function setRgb(){
+    gridDivs.style.backgroundColor = randomRgbColor();
+}
+
+function drawInBlack(){
+
+    gridDivs.addEventListener('mouseover',setBlack);
+    colorBtn.innerText = 'Click for Random Colors';
+    colorBtn.addEventListener('click',drawInRandomRgb);
+}
+
+
+drawInBlack();
             
+
+function backToBlack(){
+        gridDivs.style.backgroundColor = 'lightgray';
+        gridDivs.removeEventListener('mouseover',setRgb);
+        gridDivs.addEventListener('mouseover',setBlack);
+        colorBtn.innerText = 'Click for Random Colors';
+        colorBtn.removeEventListener('click',backToBlack);
+        colorBtn.addEventListener('click',drawInRandomRgb);
+     }
+
+
+function drawInRandomRgb(){
+    gridDivs.style.backgroundColor = 'lightgray';
+    gridDivs.removeEventListener('mouseover',setBlack);
+    gridDivs.addEventListener('mouseover',setRgb);
+    colorBtn.removeEventListener('click',drawInRandomRgb);
+    colorBtn.addEventListener('click',backToBlack);
+    colorBtn.innerText = 'Draw in Black';
+}
+
+
 
                 
                  }   divContainer.appendChild(rowDivs);
@@ -341,8 +393,7 @@ const randomRgbColor = () => {
         
 
           
-
-            
+          
                  
 
                   

@@ -1,0 +1,11 @@
+.gridDivs {
+    background-color: lightgray;
+}
+
+.gridDivs.gridDivsBlack {
+    background-color: black;
+}
+
+.hidden {
+    display: none;
+}
